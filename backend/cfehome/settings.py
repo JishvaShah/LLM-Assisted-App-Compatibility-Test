@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     #internal apps
     'api',
+    'accounts',
     #default apps
     'django.contrib.admin',
     'django.contrib.auth',

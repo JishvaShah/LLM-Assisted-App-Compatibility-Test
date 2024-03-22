@@ -12,7 +12,7 @@ class GeminiAPI:
         model = genai.GenerativeModel(self.model)
         screenshot_picture = {
             'mime_type': 'image/png',
-            'data': Path("test.png").read_bytes()
+            'data': Path("temp_image.png").read_bytes()
         }
         prompt = f"""
         Imagine you are a phone app tester checking phone application by checking screenshots of these applications as they are being tested. 
