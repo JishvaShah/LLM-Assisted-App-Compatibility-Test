@@ -17,6 +17,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv( )
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+GCP_STORAGE_BUCKET = os.getenv('GCP_STORAGE_BUCKET')
+GCP_CREDENTIALS_FILE = os.getenv('GCP_CREDENTIALS_JSON')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
