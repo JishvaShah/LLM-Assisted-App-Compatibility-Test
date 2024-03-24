@@ -18,13 +18,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv( )
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 GCP_STORAGE_BUCKET = os.getenv('GCP_STORAGE_BUCKET')
-GCP_CREDENTIALS_FILE = os.getenv('GCP_CREDENTIALS_JSON')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r8ms^xmpz*%%%=j9-b%$w_!9bou2c2s#qwz$ct3$dajs%0v&=u'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -86,11 +86,14 @@ WSGI_APPLICATION = 'cfehome.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'app_db',          
+        'USER': 'chenyian261',     
+        'PASSWORD': DB_PASSWORD,      
+        'HOST': 'localhost',          
+        'PORT': '',                   
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

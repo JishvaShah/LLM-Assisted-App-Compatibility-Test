@@ -3,6 +3,7 @@ from pathlib import Path
 import google.generativeai as genai
 from django.conf import settings
 import re
+import json
 
 class GeminiAPI:
     def __init__(self,model='gemini-pro-vision'):
@@ -44,14 +45,11 @@ class GeminiAPI:
            stream=False
         )
 
-        # try:
-        #     print(response.text)
-        #     return json.loads(response.text)
-        # except Exception as e:
-        #     print(f'{type(e).__name__}: {e}')
-        
         try:
             print(response.text)
+            print(type(response))
+            for t in response:
+                print(t)
             # Extract the output_text and flag values using regular expressions
             output_text_match = re.search(r'"output_text"\s*:\s*"(.+?)"', response.text)
             flag_match = re.search(r'"flag"\s*:\s*(\w+)', response.text)
@@ -70,6 +68,27 @@ class GeminiAPI:
         except Exception as e:
             print(f'{type(e).__name__}: {e}')
             return None
+        # try:
+        #     response_dict = json.loads(response.text)
+        #     output_text = response_dict.get("output_text")
+        #     flag = response_dict.get("flag")
+            
+        #     if output_text is not None and flag is not None:
+        #         return {
+        #             "output_text": output_text,
+        #             "flag": flag
+        #         }
+        #     else:
+        #         print("Error: Missing output_text or flag in the response.")
+        #         return None
+
+        # except json.JSONDecodeError as e:
+        #     print(f"Error decoding JSON: {e}")
+        #     return None
+
+        # except Exception as e:
+        #     print(f"{type(e).__name__}: {e}")
+        #     return None
 
 
 

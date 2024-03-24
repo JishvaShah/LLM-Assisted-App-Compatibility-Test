@@ -1,10 +1,9 @@
 from django.db import models
 
-# Create your models here.
-# class AppTester(models.Model):
-#     _input = models.TextField()
-#     _output = models.TextField()
+class Screenshot(models.Model):
+    image_url = models.URLField()
+    analysis_result = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-#     class Meta:
-#         db_table = "t_app_tester"
 
