@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     #external apps
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     #internal apps
     'api',
     'accounts',

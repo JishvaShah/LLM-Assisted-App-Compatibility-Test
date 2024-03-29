@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework import generics, filters
 from .gemini_api import GeminiAPI,GeminiAPIError
 import datetime
 from google.cloud import storage
@@ -9,6 +10,8 @@ from django.conf import settings
 from .models import Screenshot
 import api.prompt_factory as prompt_factory
 import logging
+from .serializers import ScreenshotSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 class ImageProcessingAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -52,7 +55,7 @@ class ImageProcessingAPIView(APIView):
 
             logging.info("Saving image to database...")
             #save screenshot information to database
-            screenshot = Screenshot(image_url=image_url, analysis_result=output,prompt=prompt)
+            screenshot = Screenshot(image_url=image_url, analysis_result=output,prompt=prompt,flag=output.get("flag"))
             screenshot.save()
 
         elif not output:
@@ -66,3 +69,13 @@ class ImageProcessingAPIView(APIView):
         }
         
         return Response(response_data, status=status.HTTP_200_OK)
+
+class ScreenshotListAPIView(generics.ListAPIView):
+    queryset = Screenshot.objects.all()
+    serializer_class = ScreenshotSerializer
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['created_at', 'image_url', 'flag']
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
+
+
