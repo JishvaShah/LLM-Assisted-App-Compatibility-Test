@@ -32,7 +32,9 @@ function ImageUpload() {
   const handleConfirmUpload = () => {
       // Prepare form data
       const formData = new FormData();
-      formData.append('images', file, file.name);
+      selectedFiles.forEach(file => {
+        formData.append('images', file, file.name);
+      });
 
       // Make API call
       fetch('http://localhost:8000/api/process-image/', {
