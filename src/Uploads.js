@@ -14,16 +14,6 @@ function Uploads() {
         <div style={{ flex: 1 }}>
           <ImageUpload setOutput={setOutput} />
         </div>
-        {output && (
-          <div style={{ flex: 1, marginLeft: '20px' }}>
-            <h2>Output</h2>
-            <textarea
-              value={output}
-              disabled
-              style={{ width: '100%', minHeight: '200px' }}
-            />
-          </div>
-        )}
       </div>
       <Footer/>
     </div>

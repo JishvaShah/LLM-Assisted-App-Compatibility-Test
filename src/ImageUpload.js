@@ -44,11 +44,14 @@ function ImageUpload() {
       .then(response => response.json())
       .then(data => {
         // Handle the response
-        setOutput(JSON.stringify(data, null, 2));
-        setShowModal(false);
-        setSelectedFiles([]);
-        alert("Images uploaded successfully");
-        fileInputRef.current.value = null;
+        setTimeout(() => {
+              // Instead of setting output, log data to console
+              console.log(data);
+              setShowModal(false);
+              setSelectedFiles([]);
+              alert("Images uploaded successfully");
+              fileInputRef.current.value = null;
+            }, 10000);
       })
       .catch(error => {
         console.error('Error:', error);
@@ -88,7 +91,21 @@ function ImageUpload() {
           </div>
         </div>
       )}
+        {output && (
+                  <div style={{ flex: 1, marginLeft: '20px' }}>
 
+                  </div>
+                )}
+        {output && (
+                <div className="mt-4">
+                  <h2>Output</h2>
+                                      <textarea
+                                        value={output}
+                                        disabled
+                                        style={{ width: '100%', minHeight: '200px' }}
+                                      />
+                </div>
+              )}
     </div>
   );
 }
