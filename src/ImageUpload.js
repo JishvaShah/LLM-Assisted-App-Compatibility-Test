@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
 
 function ImageUpload() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -13,7 +12,7 @@ function ImageUpload() {
     if (file && file.type.startsWith('image/')) {
       setSelectedFile(file);
     } else {
-      toast.error("Please upload an image file only");
+      alert("Please upload an image file only");
     }
   };
 
@@ -38,7 +37,7 @@ function ImageUpload() {
     setShowModal(false);
     setUploads([selectedFile, ...uploads]); // Add uploaded file to beginning of uploads array
     setSelectedFile(null); // Clear the selected file
-    toast.success("Image uploaded successfully");
+    alert("Image uploaded successfully");
     // Reset the file input
     fileInputRef.current.value = null;
   };
