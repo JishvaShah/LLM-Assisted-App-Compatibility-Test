@@ -1,4 +1,5 @@
 .env
 venv/
+myenv/
 __pycache__/
-app-compat-test-1e6010646463.json
+app-compat-test.json

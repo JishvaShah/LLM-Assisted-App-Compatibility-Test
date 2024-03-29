@@ -18,7 +18,7 @@ class ImageProcessingAPIView(APIView):
 
     def post(self, request, format=None):
         #TODO: move the credentials file in production
-        CREDENTIALS_FILE = "/Users/chenyian261/Documents/GitHub/CS6510Project/app-compat-test-1e6010646463.json"
+        CREDENTIALS_FILE = "/Users/chenyian261/Documents/GitHub/CS6510Project/app-compat-test.json"
         images = request.FILES.getlist('images')
         results = []
 
