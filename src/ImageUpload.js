@@ -1,18 +1,18 @@
 import React, { useState, useRef } from 'react';
 
-
 function ImageUpload() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [uploads, setUploads] = useState([]);
   const fileInputRef = useRef(null);
+  const [output, setOutput] = useState('');
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setSelectedFile(file);
+    const files = event.target.files;
+    if (files.length > 0) {
+      const validFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+      setSelectedFiles(validFiles);
     } else {
-      alert("Please upload an image file only");
+      setSelectedFiles([]);
     }
   };
 
@@ -29,24 +29,35 @@ function ImageUpload() {
     setShowModal(false);
   };
 
-  const handleDelete = (index) => {
-    const newFiles = [...selectedFiles];
-    newFiles.splice(index, 1);
-    setSelectedFiles(newFiles);
-  };
-
   const handleConfirmUpload = () => {
-    setShowModal(false);
-    setUploads([selectedFile, ...uploads]); // Add uploaded file to beginning of uploads array
-    setSelectedFile(null); // Clear the selected file
-    alert("Image uploaded successfully");
-    // Reset the file input
-    fileInputRef.current.value = null;
-  };
+      // Prepare form data
+      const formData = new FormData();
+      selectedFiles.forEach(file => {
+        formData.append('images', file, file.name);
+      });
+
+      // Make API call
+      fetch('/api/process-image/', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Handle the response
+        setOutput(JSON.stringify(data, null, 2));
+        setShowModal(false);
+        setSelectedFiles([]);
+        alert("Images uploaded successfully");
+        fileInputRef.current.value = null;
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert("An error occurred while uploading images");
+      });
+    };
 
   return (
     <div className="container">
-      <h2 className="mt-4 mb-4">Mobile Bug Solver</h2>
       <div>
         <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} multiple className="mb-2" />
         {selectedFiles.length > 0 && (
@@ -81,5 +92,7 @@ function ImageUpload() {
     </div>
   );
 }
+
+
 
 export default ImageUpload;
