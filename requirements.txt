@@ -4,3 +4,8 @@ django-cors-headers
 google-generativeai
 python-dotenv 
 djangorestframework-simplejwt
+PyJWT==2.8.0
+requests==2.31.0
+google-cloud-storage
+psycopg2
+django_filters
