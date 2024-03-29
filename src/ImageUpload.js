@@ -92,11 +92,6 @@ function ImageUpload() {
         </div>
       )}
         {output && (
-                  <div style={{ flex: 1, marginLeft: '20px' }}>
-
-                  </div>
-                )}
-        {output && (
                 <div className="mt-4">
                   <h2>Output</h2>
                                       <textarea
