@@ -1,0 +1,53 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  .contentText{
+    margin-top: 20px;
+  }
+  .registerLink:hover {
+    color: white; 
+  }
+  .registerLink {
+    color: blue; 
+    text-decoration: underline;
+  }
+
+  .loginForm form {
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 3rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .loginForm form label {
+    margin-top: 5%; 
+  }
+  
+  .loginForm form input {
+    margin-bottom: 10%; 
+    border: none;
+    border-radius: 3px;
+
+  }
+  .loginForm form input:focus {
+    outline: none; 
+    border-color: #32B2BB; 
+    box-shadow: 0 0 5px #32B2BB; 
+  }
+  
+  .loginForm form input[type="submit"] {
+    margin-top: 5%; 
+    align-self: center;
+    color: #0b919a;
+    font-size: 18px;
+    padding: 2% 6%;
+  }
+  
