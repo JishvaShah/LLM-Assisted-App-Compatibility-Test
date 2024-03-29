@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 
 
 function ImageUpload() {
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [uploads, setUploads] = useState([]);
   const fileInputRef = useRef(null);
@@ -17,8 +17,8 @@ function ImageUpload() {
   };
 
   const handleSubmit = () => {
-    if (!selectedFile) {
-      alert("Please select an image");
+    if (selectedFiles.length === 0) {
+      alert("Please select at least one image");
       return;
     }
 
@@ -29,8 +29,10 @@ function ImageUpload() {
     setShowModal(false);
   };
 
-  const handleDelete = () => {
-    setSelectedFile(null); // Clear the selected file
+  const handleDelete = (index) => {
+    const newFiles = [...selectedFiles];
+    newFiles.splice(index, 1);
+    setSelectedFiles(newFiles);
   };
 
   const handleConfirmUpload = () => {
@@ -46,10 +48,10 @@ function ImageUpload() {
     <div className="container">
       <h2 className="mt-4 mb-4">Mobile Bug Solver</h2>
       <div>
-        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="mb-2" />
-        {selectedFile && (
+        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} multiple className="mb-2" />
+        {selectedFiles.length > 0 && (
           <>
-            <button className="btn btn-danger ml-2" onClick={handleDelete}>Delete</button>
+            <button className="btn btn-danger ml-2" onClick={() => setSelectedFiles([])}>Clear Selection</button>
             <button className="btn btn-primary ml-2" onClick={handleSubmit}>Submit</button>
           </>
         )}
@@ -60,12 +62,12 @@ function ImageUpload() {
           <div className="modal-dialog modal-dialog-centered" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Selected Image</h5>
+                <h5 className="modal-title">Selected Images</h5>
               </div>
               <div className="modal-body">
-                {selectedFile && (
-                  <img src={URL.createObjectURL(selectedFile)} alt="Selected Image" className="img-fluid" style={{ width: '100%', height: '100%' }} />
-                )}
+                {selectedFiles.map((file, index) => (
+                  <img key={index} src={URL.createObjectURL(file)} alt={`Selected Image ${index}`} className="img-fluid" style={{ width: '100%', height: '100%' }} />
+                ))}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
@@ -76,17 +78,6 @@ function ImageUpload() {
         </div>
       )}
 
-      {uploads.length > 0 && (
-        <div className="mt-4">
-          <h3>Uploaded Images</h3>
-          {uploads.reverse().map((file, index) => (
-            <div key={index} className="mb-2">
-              <img src={URL.createObjectURL(file)} alt={`Uploaded Image ${index}`} className="img-thumbnail mr-2" style={{ width: '100px', height: '100px' }} />
-              <button className="btn btn-danger" onClick={() => setUploads(uploads.filter((_, i) => i !== index))}>Delete</button>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
