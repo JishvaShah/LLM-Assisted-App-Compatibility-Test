@@ -29,7 +29,8 @@ function ImageUpload() {
     setShowModal(false);
   };
 
-  const handleConfirmUpload = () => {
+  const handleConfirmUpload = async () => {
+    try {
       // Prepare form data
       const formData = new FormData();
       selectedFiles.forEach(file => {
@@ -37,27 +38,28 @@ function ImageUpload() {
       });
 
       // Make API call
-      fetch('http://localhost:8000/api/process-image/', {
+      const response = await fetch('http://localhost:8000/api/process-image/', {
         method: 'POST',
         body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Handle the response
-        setTimeout(() => {
-              // Instead of setting output, log data to console
-              console.log(data);
-              setShowModal(false);
-              setSelectedFiles([]);
-              alert("Images uploaded successfully");
-              fileInputRef.current.value = null;
-            }, 10000);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert("An error occurred while uploading images");
       });
-    };
+
+      const data = await response.json();
+
+      // Introduce a delay (e.g., 10 seconds) before handling the response
+      //await new Promise(resolve => setTimeout(resolve, 10000));
+
+      // Handle the response after the delay
+      console.log(data); // Instead of setting output, log data to console
+      setShowModal(false);
+      setSelectedFiles([]);
+      alert("Images uploaded successfully");
+      fileInputRef.current.value = null;
+    } catch (error) {
+      console.error('Error:', error);
+      alert("An error occurred while uploading images");
+    }
+  };
+
 
   return (
     <div className="container">
