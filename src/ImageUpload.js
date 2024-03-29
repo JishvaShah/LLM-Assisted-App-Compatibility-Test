@@ -37,7 +37,7 @@ function ImageUpload() {
       });
 
       // Make API call
-      fetch('/api/process-image/', {
+      fetch('http://localhost:8000/api/process-image/', {
         method: 'POST',
         body: formData
       })
