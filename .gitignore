@@ -3,3 +3,4 @@ venv/
 myenv/
 __pycache__/
 app-compat-test.json
+node_modules/
