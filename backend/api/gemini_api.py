@@ -32,7 +32,7 @@ class GeminiAPI:
         )
 
         try:
-            #Extract the output_text and flag values using regular expressions
+            # regular expressions to extract Gemini API output text
             output_text_match = re.search(r'"output_text"\s*:\s*"(.+?)"', response.text)
             flag_match = re.search(r'"flag"\s*:\s*(\w+)', response.text)
 

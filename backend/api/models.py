@@ -14,12 +14,12 @@ class Screenshot(models.Model):
     def generate_signed_url(self):
         client = storage.Client.from_service_account_json(settings.GCP_CREDENTIALS_FILE)
         bucket_name = settings.GCP_STORAGE_BUCKET
-        blob_name = self.image_url.split("/")[-1]  #assume the image_url contains the blob name
+        blob_name = self.image_url.split("/")[-1] 
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(blob_name)
         
-        # Set expiration time for the signed URL
-        expiration = datetime.timedelta(minutes=15)  #let URL expire in 15 minutes
+        # Set 15 minutes expiration time for the signed URL
+        expiration = datetime.timedelta(minutes=15)
         signed_url = blob.generate_signed_url(expiration=expiration)
 
         return signed_url

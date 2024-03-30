@@ -16,8 +16,10 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 
 
-
 class ImageProcessingAPIView(APIView):
+    """
+    API class for processing images with Gemini API
+    """
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, format=None):
@@ -73,6 +75,9 @@ class ImageProcessingAPIView(APIView):
         return Response(results, status=status.HTTP_200_OK)
 
 class ScreenshotListAPIView(generics.ListAPIView):
+    """
+    API class for querying database objects
+    """
     queryset = Screenshot.objects.all()
     serializer_class = ScreenshotSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
