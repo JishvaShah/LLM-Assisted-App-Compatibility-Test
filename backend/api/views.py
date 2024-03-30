@@ -12,13 +12,15 @@ import api.prompt_factory as prompt_factory
 import logging
 from .serializers import ScreenshotSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils import timezone
+from django.utils.dateparse import parse_date
+
+
 
 class ImageProcessingAPIView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, format=None):
-        #TODO: move the credentials file in production
-        CREDENTIALS_FILE = "/Users/chenyian261/Documents/GitHub/CS6510Project/app-compat-test.json"
         images = request.FILES.getlist('images')
         results = []
 
@@ -48,7 +50,7 @@ class ImageProcessingAPIView(APIView):
 
                 logging.info(f"Uploading image to Google Cloud Storage: {filename}")
                 # Upload the image to GCS
-                client = storage.Client.from_service_account_json(CREDENTIALS_FILE)
+                client = storage.Client.from_service_account_json(settings.GCP_CREDENTIALS_FILE)
                 bucket = client.get_bucket(settings.GCP_STORAGE_BUCKET)
                 blob = bucket.blob(filename)
                 blob.upload_from_file(image_file)
@@ -77,3 +79,29 @@ class ScreenshotListAPIView(generics.ListAPIView):
     filterset_fields = ['created_at', 'image_url', 'flag']
     ordering_fields = ['created_at']
     ordering = ['-created_at']
+
+    def get_queryset(self):
+        queryset = Screenshot.objects.all()
+        start_date = self.request.query_params.get('start_date', None)
+        end_date = self.request.query_params.get('end_date', None)
+
+        if start_date:
+            start_date = parse_date(start_date)
+            if start_date:
+                #When only a date is provided, we assume the start of the day
+                start_date = timezone.make_aware(timezone.datetime.combine(start_date, timezone.datetime.min.time()))
+
+        if end_date:
+            end_date = parse_date(end_date)
+            if end_date:
+                # Include the end of the day for the end date
+                end_date = timezone.make_aware(timezone.datetime.combine(end_date, timezone.datetime.max.time()))
+
+        if start_date and end_date:
+            queryset = queryset.filter(created_at__range=[start_date, end_date])
+        elif start_date:
+            queryset = queryset.filter(created_at__gte=start_date)
+        elif end_date:
+            queryset = queryset.filter(created_at__lte=end_date)
+
+        return queryset

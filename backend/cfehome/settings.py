@@ -16,6 +16,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv( )
+#TODO: move the credentials file in production
+GCP_CREDENTIALS_FILE = "/Users/chenyian261/Documents/GitHub/CS6510Project/app-compat-test.json"
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 GCP_STORAGE_BUCKET = os.getenv('GCP_STORAGE_BUCKET')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+    'corsheaders',
     #internal apps
     'api',
     'accounts',
@@ -58,7 +61,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'cfehome.urls'
 
