@@ -43,13 +43,18 @@ function ImageUpload() {
         body: formData
       });
 
+      // Introduce a delay (e.g., 10 seconds) before handling the response
+      await new Promise(resolve => setTimeout(resolve, 10000));
       const data = await response.json();
 
-      // Introduce a delay (e.g., 10 seconds) before handling the response
-      //await new Promise(resolve => setTimeout(resolve, 10000));
-
       // Handle the response after the delay
-      console.log(data); // Instead of setting output, log data to console
+      console.log(data); // Log the response data to console
+
+      // Check if response contains output_text
+      if (data.hasOwnProperty('output_text')) {
+        setOutput(data.output_text);
+      }
+
       setShowModal(false);
       setSelectedFiles([]);
       alert("Images uploaded successfully");
@@ -59,7 +64,6 @@ function ImageUpload() {
       alert("An error occurred while uploading images");
     }
   };
-
 
   return (
     <div className="container">
@@ -93,20 +97,15 @@ function ImageUpload() {
           </div>
         </div>
       )}
-        {output && (
-                <div className="mt-4">
-                  <h2>Output</h2>
-                                      <textarea
-                                        value={output}
-                                        disabled
-                                        style={{ width: '100%', minHeight: '200px' }}
-                                      />
-                </div>
-              )}
+
+      {output && (
+        <div className="mt-4">
+          <h2>Output</h2>
+          <p>{output}</p>
+        </div>
+      )}
     </div>
   );
 }
-
-
 
 export default ImageUpload;
