@@ -143,17 +143,13 @@ const handleConfirmUpload = async () => {
         </div>
       )}
 
-      {output && (
-              <div className="mt-4">
-                <h2>Output</h2>
-                <p>{output}</p>
-                {flag && (
-                  <p>Flag: {flag}</p>
-                )}
-              </div>
-            )}
+      <div className="mt-4">
+            <h2>Output</h2>
+            <p>{output}</p>
+            <p>{flag}</p>
           </div>
-        );
-      }
+        </div>
+    );
+  }
 
 export default ImageUpload;
