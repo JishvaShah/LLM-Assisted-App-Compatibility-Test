@@ -5,6 +5,7 @@ function ImageUpload() {
   const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef(null);
   const [output, setOutput] = useState('');
+  const [flag, setFlag] = useState('');
 
   const handleFileChange = (event) => {
     const files = event.target.files;
@@ -92,10 +93,8 @@ const handleConfirmUpload = async () => {
         const flag = data.flag;
         console.log("Output Text:", outputText);
         console.log("Flag:", flag);
-        // Do something with outputText and flag
-        // For example:
-        // setOutput(outputText);
-        // if (flag === 'some_value') { /* do something */ }
+        setOutput(outputText);
+        setFlag(flag);
       }
     }
 
@@ -145,13 +144,16 @@ const handleConfirmUpload = async () => {
       )}
 
       {output && (
-        <div className="mt-4">
-          <h2>Output</h2>
-          <p>{output}</p>
-        </div>
-      )}
-    </div>
-  );
-}
+              <div className="mt-4">
+                <h2>Output</h2>
+                <p>{output}</p>
+                {flag && (
+                  <p>Flag: {flag}</p>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      }
 
 export default ImageUpload;
