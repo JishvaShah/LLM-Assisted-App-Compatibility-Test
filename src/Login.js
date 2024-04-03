@@ -1,18 +1,49 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from './Header.js';
 import Footer from './Footer.js';
 import { Link } from 'react-router-dom'; 
 import './Login.css';
 
 function Login() {
-
   const [userID, setUserID] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission logic here
-    console.log('Submitted:', { userID, password });
+    try {
+      
+      const response = await fetch('http://localhost:8000/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          employee_id: userID,
+          password: password
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        //check
+        console.log('Login Successful');
+        localStorage.setItem('accessToken', data.access);
+        localStorage.setItem('refreshToken', data.refresh);
+        navigate('/dashboard');
+      } else {
+        //check
+        console.error('Login Failed');
+      }
+
+      setUserID('');
+      setPassword('');
+
+    } catch (error) {
+      //check
+      console.error('Error:', error);
+    }
   };
 
   return (
