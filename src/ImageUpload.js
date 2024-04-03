@@ -83,8 +83,9 @@ const handleConfirmUpload = async () => {
     await new Promise(resolve => setTimeout(resolve, 10000));
     const dataArray = await response.json();
 
-    // Handle each object in the dataArray
-    dataArray.forEach(data => {
+    // Check if the dataArray contains at least one element
+    if (dataArray.length > 0) {
+      const data = dataArray[0]; // Access the 0th element
       // Check if the data object contains output_text and flag
       if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
         const outputText = data.output_text;
@@ -96,7 +97,7 @@ const handleConfirmUpload = async () => {
         // setOutput(outputText);
         // if (flag === 'some_value') { /* do something */ }
       }
-    });
+    }
 
     setShowModal(false);
     setSelectedFiles([]);
@@ -107,6 +108,7 @@ const handleConfirmUpload = async () => {
     alert("An error occurred while uploading images");
   }
 };
+
 
 
   return (
