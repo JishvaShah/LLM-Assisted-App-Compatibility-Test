@@ -143,13 +143,27 @@ const handleConfirmUpload = async () => {
         </div>
       )}
 
-      <div className="mt-4">
-            <h2>Output</h2>
-            <p>{output}</p>
-            <p>{flag}</p>
+      <div className="mt-4" style={outputContainerStyle}>
+              <h2>Output</h2>
+              <div className="output-content" style={outputContentStyle}>
+                <p>{output}</p>
+                <p>{flag}</p>
+              </div>
+            </div>
           </div>
-        </div>
-    );
-  }
+        );
+      }
+
+      // Inline CSS styles
+      const outputContainerStyle = {
+        border: '1px solid #ccc',
+        borderRadius: '5px',
+        padding: '10px',
+        marginTop: '20px'
+      };
+
+      const outputContentStyle = {
+        margin: '10px 0'
+      };
 
 export default ImageUpload;
