@@ -29,41 +29,85 @@ function ImageUpload() {
     setShowModal(false);
   };
 
-  const handleConfirmUpload = async () => {
-    try {
-      // Prepare form data
-      const formData = new FormData();
-      selectedFiles.forEach(file => {
-        formData.append('images', file, file.name);
-      });
+//  const handleConfirmUpload = async () => {
+//    try {
+//      // Prepare form data
+//      const formData = new FormData();
+//      selectedFiles.forEach(file => {
+//        formData.append('images', file, file.name);
+//      });
+//
+//      // Make API call
+//      const response = await fetch('http://localhost:8000/api/process-image/', {
+//        method: 'POST',
+//        body: formData
+//      });
+//
+//      // Introduce a delay (e.g., 10 seconds) before handling the response
+//      await new Promise(resolve => setTimeout(resolve, 10000));
+//      const data = await response.json();
+//
+//      // Handle the response after the delay
+//      console.log(data); // Log the response data to console
+//
+//      // Check if response contains output_text
+//      if (data.hasOwnProperty('output_text')) {
+//        setOutput(data.output_text);
+//      }
+//
+//      setShowModal(false);
+//      setSelectedFiles([]);
+//      alert("Images uploaded successfully");
+//      fileInputRef.current.value = null;
+//    } catch (error) {
+//      console.error('Error:', error);
+//      alert("An error occurred while uploading images");
+//    }
+//  };
 
-      // Make API call
-      const response = await fetch('http://localhost:8000/api/process-image/', {
-        method: 'POST',
-        body: formData
-      });
+const handleConfirmUpload = async () => {
+  try {
+    // Prepare form data
+    const formData = new FormData();
+    selectedFiles.forEach(file => {
+      formData.append('images', file, file.name);
+    });
 
-      // Introduce a delay (e.g., 10 seconds) before handling the response
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      const data = await response.json();
+    // Make API call
+    const response = await fetch('http://localhost:8000/api/process-image/', {
+      method: 'POST',
+      body: formData
+    });
 
-      // Handle the response after the delay
-      console.log(data); // Log the response data to console
+    // Introduce a delay (e.g., 10 seconds) before handling the response
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    const dataArray = await response.json();
 
-      // Check if response contains output_text
-      if (data.hasOwnProperty('output_text')) {
-        setOutput(data.output_text);
+    // Handle each object in the dataArray
+    dataArray.forEach(data => {
+      // Check if the data object contains output_text and flag
+      if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
+        const outputText = data.output_text;
+        const flag = data.flag;
+        console.log("Output Text:", outputText);
+        console.log("Flag:", flag);
+        // Do something with outputText and flag
+        // For example:
+        // setOutput(outputText);
+        // if (flag === 'some_value') { /* do something */ }
       }
+    });
 
-      setShowModal(false);
-      setSelectedFiles([]);
-      alert("Images uploaded successfully");
-      fileInputRef.current.value = null;
-    } catch (error) {
-      console.error('Error:', error);
-      alert("An error occurred while uploading images");
-    }
-  };
+    setShowModal(false);
+    setSelectedFiles([]);
+    alert("Images uploaded successfully");
+    fileInputRef.current.value = null;
+  } catch (error) {
+    console.error('Error:', error);
+    alert("An error occurred while uploading images");
+  }
+};
+
 
   return (
     <div className="container">
