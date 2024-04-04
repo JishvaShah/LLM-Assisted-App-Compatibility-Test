@@ -6,6 +6,7 @@ function ImageUpload() {
   const fileInputRef = useRef(null);
   const [output, setOutput] = useState('');
   const [flag, setFlag] = useState(0);
+  const [outputData, setOutputData] = useState([]);
 
   const handleFileChange = (event) => {
     const files = event.target.files;
@@ -108,6 +109,15 @@ const handleConfirmUpload = async () => {
   }
 };
 
+const updateOutputData = (outputText, flag) => {
+    const updatedOutputData = outputData.concat({
+      images: selectedFiles,
+      output: outputText,
+      flag: flag
+    });
+    setOutputData(updatedOutputData);
+  };
+
 
 
   return (
@@ -143,13 +153,45 @@ const handleConfirmUpload = async () => {
         </div>
       )}
 
-      <div className="mt-4" style={outputContainerStyle}>
-              <h2>Output</h2>
-              <div className="output-content" style={outputContentStyle}>
-                <p>{output}</p>
-                <p>{flag}</p>
-              </div>
-            </div>
+//      <div className="mt-4" style={outputContainerStyle}>
+//              <h2>Output</h2>
+//              <div className="output-content" style={outputContentStyle}>
+//                <p>{output}</p>
+//                <p>{flag}</p>
+//              </div>
+//            </div>
+<div className="mt-4">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Uploaded Images</th>
+              <th>Output</th>
+              <th>Flag</th>
+            </tr>
+          </thead>
+          <tbody>
+            {outputData.map((data, index) => (
+              <tr key={index}>
+                <td>
+                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                    {data.images.map((image, imageIndex) => (
+                      <img
+                        key={imageIndex}
+                        src={URL.createObjectURL(image)}
+                        alt={`Uploaded Image ${index + 1}-${imageIndex + 1}`}
+                        className="img-fluid"
+                        style={{ width: '100px', height: 'auto', marginRight: '10px', marginBottom: '10px' }}
+                      />
+                    ))}
+                  </div>
+                </td>
+                <td>{data.output}</td>
+                <td>{data.flag}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
           </div>
         );
       }
