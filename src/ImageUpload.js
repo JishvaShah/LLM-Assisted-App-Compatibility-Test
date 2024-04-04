@@ -5,7 +5,7 @@ function ImageUpload() {
   const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef(null);
   const [output, setOutput] = useState('');
-  const [flag, setFlag] = useState(flag);
+  const [flag, setFlag] = useState(false);
   const [outputData, setOutputData] = useState([]);
 
   const handleFileChange = (event) => {
