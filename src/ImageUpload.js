@@ -96,6 +96,8 @@ const handleConfirmUpload = async () => {
         console.log("Flag:", flag);
         setOutput(outputText);
         setFlag(flag);
+        // Update outputData state
+        updateOutputData(outputText, flag);
       }
     }
 
