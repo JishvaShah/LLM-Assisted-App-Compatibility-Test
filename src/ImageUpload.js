@@ -81,24 +81,34 @@ const handleConfirmUpload = async () => {
       body: formData
     });
 
-    // Introduce a delay (e.g., 10 seconds) before handling the response
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    const dataArray = await response.json();
-
-    // Check if the dataArray contains at least one element
-    if (dataArray.length > 0) {
-      const data = dataArray[0]; // Access the 0th element
-      // Check if the data object contains output_text and flag
-      if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
-        const outputText = data.output_text;
-        const flag = data.flag;
-        console.log("Output Text:", outputText);
-        console.log("Flag:", flag);
-        setOutput(outputText);
-        setFlag(flag);
-        // Update outputData state
-        updateOutputData(outputText, flag);
+    // Check if the response status is 200
+    if (response.status === 200) {
+      const responseData = await response.json();
+      // Check if response data contains a message
+      if (responseData.message) {
+        // Set output state with the message
+        setOutput(responseData.message);
+      } else {
+        // Continue with the previous handling logic
+        const dataArray = responseData;
+        if (dataArray.length > 0) {
+          const data = dataArray[0]; // Access the 0th element
+          if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
+            const outputText = data.output_text;
+            const flag = data.flag;
+            console.log("Output Text:", outputText);
+            console.log("Flag:", flag);
+            setOutput(outputText);
+            setFlag(flag);
+            // Update outputData state
+            updateOutputData(outputText, flag);
+          }
+        }
       }
+    } else {
+      // Handle non-200 status code
+      console.error('Error:', response.statusText);
+      alert("An error occurred while uploading images");
     }
 
     setShowModal(false);
@@ -110,6 +120,7 @@ const handleConfirmUpload = async () => {
     alert("An error occurred while uploading images");
   }
 };
+
 
   const updateOutputData = (outputText, flag) => {
     const updatedOutputData = outputData.concat({
