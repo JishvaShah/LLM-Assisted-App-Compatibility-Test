@@ -13,7 +13,6 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      
       const response = await fetch('http://localhost:8000/login/', {
         method: 'POST',
         headers: {
@@ -31,7 +30,7 @@ function Login() {
         console.log('Login Successful');
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
-        navigate('/dashboard');
+        navigate('/');
       } else {
         //check
         console.error('Login Failed');
