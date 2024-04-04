@@ -5,7 +5,7 @@ function ImageUpload() {
   const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef(null);
   const [output, setOutput] = useState('');
-  const [flag, setFlag] = useState(0);
+  const [flag, setFlag] = useState(flag);
   const [outputData, setOutputData] = useState([]);
 
   const handleFileChange = (event) => {
@@ -109,7 +109,7 @@ const handleConfirmUpload = async () => {
   }
 };
 
-const updateOutputData = (outputText, flag) => {
+  const updateOutputData = (outputText, flag) => {
     const updatedOutputData = outputData.concat({
       images: selectedFiles,
       output: outputText,
@@ -153,13 +153,13 @@ const updateOutputData = (outputText, flag) => {
         </div>
       )}
 
-//      <div className="mt-4" style={outputContainerStyle}>
-//              <h2>Output</h2>
-//              <div className="output-content" style={outputContentStyle}>
-//                <p>{output}</p>
-//                <p>{flag}</p>
-//              </div>
-//            </div>
+      <div className="mt-4" style={outputContainerStyle}>
+              <h2>Output</h2>
+              <div className="output-content" style={outputContentStyle}>
+                <p>{output}</p>
+                <p>{flag}</p>
+              </div>
+            </div>
 <div className="mt-4">
         <table className="table">
           <thead>
