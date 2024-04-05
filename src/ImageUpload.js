@@ -7,6 +7,7 @@ function ImageUpload() {
   const [output, setOutput] = useState('');
   const [flag, setFlag] = useState(false);
   const [outputData, setOutputData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (event) => {
     const files = event.target.files;
@@ -69,6 +70,7 @@ function ImageUpload() {
 
 const handleConfirmUpload = async () => {
   try {
+    setLoading(true); // Set loading to true while waiting for response
     // Prepare form data
     const formData = new FormData();
     selectedFiles.forEach(file => {
@@ -118,6 +120,8 @@ const handleConfirmUpload = async () => {
   } catch (error) {
     console.error('Error:', error);
     alert("An error occurred while uploading images");
+  }finally {
+         setLoading(false); // Set loading back to false when request is completed
   }
 };
 
@@ -165,6 +169,8 @@ const handleConfirmUpload = async () => {
           </div>
         </div>
       )}
+
+      {loading && <LoadingSpinner />} {/* Display the loading spinner if loading state is true */}
 
       <div className="mt-4" style={outputContainerStyle}>
               <h2>Output</h2>
