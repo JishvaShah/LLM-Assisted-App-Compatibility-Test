@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import LoadingSpinner from './LoadingSpinner.js';
 
 function ImageUpload() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -156,9 +157,9 @@ const handleConfirmUpload = async () => {
               <div className="modal-header">
                 <h5 className="modal-title">Selected Images</h5>
               </div>
-              <div className="modal-body">
+              <div className="modal-body" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                 {selectedFiles.map((file, index) => (
-                  <img key={index} src={URL.createObjectURL(file)} alt={`Selected Image ${index}`} className="img-fluid" style={{ width: '100%', height: '100%' }} />
+                  <img key={index} src={URL.createObjectURL(file)} alt={`Selected Image ${index}`} className="img-fluid" style={{ width: '100%', height: 'auto' }} />
                 ))}
               </div>
               <div className="modal-footer">
@@ -170,7 +171,7 @@ const handleConfirmUpload = async () => {
         </div>
       )}
 
-      {loading && <LoadingSpinner />} {/* Display the loading spinner if loading state is true */}
+      {loading && <LoadingSpinner />}
 
       <div className="mt-4" style={outputContainerStyle}>
               <h2>Output</h2>
@@ -179,38 +180,38 @@ const handleConfirmUpload = async () => {
                 <p>{flag}</p>
               </div>
             </div>
-<div className="mt-4">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Uploaded Images</th>
-              <th>Output</th>
-              <th>Flag</th>
-            </tr>
-          </thead>
-          <tbody>
-            {outputData.map((data, index) => (
-              <tr key={index}>
-                <td>
-                  <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    {data.images.map((image, imageIndex) => (
-                      <img
-                        key={imageIndex}
-                        src={URL.createObjectURL(image)}
-                        alt={`Uploaded Image ${index + 1}-${imageIndex + 1}`}
-                        className="img-fluid"
-                        style={{ width: '100px', height: 'auto', marginRight: '10px', marginBottom: '10px' }}
-                      />
-                    ))}
-                  </div>
-                </td>
-                <td>{data.output}</td>
-                <td>{data.flag}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+<div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+  <table className="table">
+    <thead>
+      <tr>
+        <th>Uploaded Images</th>
+        <th>Output</th>
+        <th>Flag</th>
+      </tr>
+    </thead>
+    <tbody>
+      {outputData.map((data, index) => (
+        <tr key={index}>
+          <td>
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              {data.images.map((image, imageIndex) => (
+                <img
+                  key={imageIndex}
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded Image ${index + 1}-${imageIndex + 1}`}
+                  className="img-fluid"
+                  style={{ width: '100px', height: 'auto', marginRight: '10px', marginBottom: '10px' }}
+                />
+              ))}
+            </div>
+          </td>
+          <td>{data.output}</td>
+          <td>{data.flag}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
           </div>
         );
       }
