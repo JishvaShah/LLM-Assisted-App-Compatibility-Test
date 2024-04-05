@@ -13,4 +13,6 @@ def get_prompt():
             "output_text":"The screenshot image shows an error message from the MX Player app. The error message says \"Component files are corrupted or Android internal modules are not compatible with current version of MX Player.\",
             "flag": True
         }
+        NOTE: If there is anything unsuccessful for the user on the screenshot, the flag must show True, because that would count as an issue.
+        Unsuccessful examples include, account locked, account deactivated, further verification step upon logging-on an app (e.g. CAPTCHA), any errors or issues present, broken images...etc.
         """
