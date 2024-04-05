@@ -33,6 +33,9 @@
   
   .regForm form input {
     margin-bottom: 10%; 
+    padding: 5px 15px;
+    font-size: large;
+    color: #6f6f6f;
     border: none;
     border-radius: 3px;
 
