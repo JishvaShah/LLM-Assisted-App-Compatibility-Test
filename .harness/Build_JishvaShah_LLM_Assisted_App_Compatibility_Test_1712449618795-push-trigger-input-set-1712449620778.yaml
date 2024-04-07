@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_JishvaShah_LLM_Assisted_App_Compatibility_Test_1712449618795-push-trigger-input-set
+  identifier: Build_JishvaShah_LLM_Assisted_App_Compatibility_Test_1712449618795pushtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_JishvaShah_LLM_Assisted_App_Compatibility_Test_1712449618795
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
