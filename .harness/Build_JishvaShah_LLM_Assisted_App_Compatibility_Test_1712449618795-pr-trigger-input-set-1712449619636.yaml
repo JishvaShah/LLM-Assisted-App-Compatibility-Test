@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_JishvaShah_LLM_Assisted_App_Compatibility_Test_1712449618795-pr-trigger-input-set
+  identifier: Build_JishvaShah_LLM_Assisted_App_Compatibility_Test_1712449618795prtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_JishvaShah_LLM_Assisted_App_Compatibility_Test_1712449618795
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
