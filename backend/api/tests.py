@@ -140,36 +140,3 @@ class ScreenshotTestCase(TestCase):
         mock_blob.generate_signed_url.assert_called_once_with(
             expiration=datetime.timedelta(minutes=15)
         )
-
-    # @patch("api.models.storage.Client")
-    # def test_generate_signed_url(self, mock_storage_client):
-    #     mock_blob = (
-    #         mock_storage_client.return_value.bucket.return_value.blob.return_value
-    #     )
-    #     expected_signed_url = "http://mockedsignedurl.com/signed-image.png"
-    #     mock_blob.generate_signed_url.return_value = expected_signed_url
-
-    #     screenshot = Screenshot.objects.first()
-    #     signed_url = screenshot.generate_signed_url()
-
-    #     self.assertEqual(signed_url, expected_signed_url)
-    #     mock_blob.generate_signed_url.assert_called_once_with(
-    #         expiration=datetime.timedelta(minutes=15)
-    #     )
-
-    # @patch("api.models.storage.Client")
-    # def test_generate_signed_url(self, mock_storage_client):
-    #     mock_blob = (
-    #         mock_storage_client.return_value.bucket.return_value.blob.return_value
-    #     )
-    #     mock_blob.generate_signed_url.return_value = (
-    #         "http://mockedsignedurl.com/signed-image.png"
-    #     )
-
-    #     screenshot = Screenshot.objects.first()
-    #     signed_url = screenshot.generate_signed_url()
-
-    #     self.assertEqual(signed_url, "http://mockedsignedurl.com/signed-image.png")
-    #     mock_blob.generate_signed_url.assert_called_once_with(
-    #         expiration=datetime.timedelta(minutes=15)
-    #     )

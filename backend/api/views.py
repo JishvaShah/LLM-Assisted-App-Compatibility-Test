@@ -118,6 +118,7 @@ class ImageProcessingAPIView(APIView):
                     prompt=prompt,
                     flag=output.get("flag"),
                     image_hash=hash,
+                    image_name=image_file.name
                 )
                 screenshot.save()
 
@@ -125,6 +126,7 @@ class ImageProcessingAPIView(APIView):
                     {
                         "output_text": output.get("output_text"),
                         "flag": output.get("flag"),
+                        "image_name":image_file.name
                     }
                 )
             else:
@@ -146,7 +148,7 @@ class ScreenshotListAPIView(generics.ListAPIView):
     queryset = Screenshot.objects.all()
     serializer_class = ScreenshotSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ["created_at", "image_url", "flag"]
+    filterset_fields = ["created_at", "image_url", "flag","image_name"]
     ordering_fields = ["created_at"]
     ordering = ["-created_at"]
 

@@ -12,6 +12,7 @@ class Screenshot(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image_hash = models.CharField(max_length=255, unique=True)
+    image_name = models.CharField(default="image_name")
 
     def generate_signed_url(self):
         client = storage.Client.from_service_account_json(settings.GCP_CREDENTIALS_FILE)
@@ -20,8 +21,8 @@ class Screenshot(models.Model):
         bucket = client.bucket(bucket_name)
         blob = bucket.blob(blob_name)
 
-        # Set 15 minutes expiration time for the signed URL
-        expiration = datetime.timedelta(seconds=45 * 86400)
+        # Set 7 day expiration time for the signed URL
+        expiration = datetime.timedelta(seconds=604800)
         signed_url = blob.generate_signed_url(expiration=expiration)
 
         return signed_url
