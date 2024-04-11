@@ -9,7 +9,7 @@ class ScreenshotSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Screenshot
-        fields = ('id', 'image_url', 'signed_image_url', 'analysis_result', 'prompt', 'flag', 'created_at')
+        fields = ('id', 'image_name','image_url', 'signed_image_url', 'analysis_result', 'prompt', 'flag', 'created_at')
     
     def get_signed_image_url(self, obj):
         client = storage.Client.from_service_account_json(settings.GCP_CREDENTIALS_FILE)
