@@ -10,15 +10,15 @@
     margin-top: 20px;
   }
   .registerLink:hover {
-    color: white; 
+    color: #fff; 
   }
   .registerLink {
-    color: blue; 
+    color: #fff; 
     text-decoration: underline;
   }
 
   .loginForm form {
-    border: 2px solid white;
+    border: 2px solid #fff;
     border-radius: 10px;
     padding: 3rem 5rem;
     display: flex;
@@ -48,7 +48,8 @@
   .loginForm form input[type="submit"] {
     margin-top: 5%; 
     align-self: center;
-    color: #0b919a;
+    color: #625EB1;
+    background-color: #fff;
     font-size: 18px;
     padding: 2% 6%;
   }

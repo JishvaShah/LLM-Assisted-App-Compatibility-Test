@@ -2,15 +2,8 @@
 @import '~@fortawesome/fontawesome-free/css/all.min.css';
 
 .search-container{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: Source code pro, sans-serif;
-  font-size: 20px;
-  min-height: 100vh; 
   padding: 20px; 
   box-sizing: border-box; 
-  background: linear-gradient(to bottom, #9B9C9C, #32B2BB); 
   color: #fff; 
 }
 
@@ -45,35 +38,48 @@
 
 .search-results {
   flex-grow: 1; 
-  overflow-y: auto; 
+  overflow-y: scroll; 
   width: 100%; 
+}
+.table-container{
+  max-height: 300px; /* Adjust the height according to your preference */
+  border: 0.5px solid #fff;
+  overflow-y: auto; 
 }
 
 table {
-  width: 100%;
+  width: 100%;  
   border-collapse: collapse;
-  border: 1px solid #ddd;
 }
 
 th, td {
   padding: 8px;
   text-align: left;
+  border-bottom: 1px solid #fff;
+  
 }
 
-th {
+th {  
   
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #fff;
 }
 
 tbody tr {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #fff;
 }
-
+.search-button{
+    color: #625EB1;
+    background-color: #fff;
+    border-radius: 3px;
+    border: none;
+    padding: 0% 1%;
+}
 .shortened-url {
   display: inline-block;
   max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #fff; /* Add this line to set the color to white */
 }
 

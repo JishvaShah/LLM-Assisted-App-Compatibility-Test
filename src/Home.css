@@ -10,7 +10,7 @@
     height: 100vh;
     font-size: 20px;
     font-family: Source code pro, sans-serif;
-    background: linear-gradient(to bottom, #9B9C9C, #32B2BB);
+    background: linear-gradient(-225deg, #625EB1 0%, #1D8FE1 48%, #625EB1 100%);
     color: #fff;
   }
 
@@ -61,12 +61,16 @@
   .content { 
     /* border:2px solid beige;    */
     text-align: center;
+    font-size: 28px;
   }
   
   .cta {
+    font-size: 20px;
     width: 300px; 
     background: #fff;
-    color: #0b919a;
+    color: #625EB1;
+    font-weight: 600;
+    text-decoration: none;
     padding: 20px 30px;
     border-radius: 15px;
     margin-top: 50px;
