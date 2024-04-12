@@ -9,6 +9,7 @@ function ImageUpload() {
   const [flag, setFlag] = useState(false);
   const [outputData, setOutputData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [concatenatedOutput, setConcatenatedOutput] = useState('');
 
   const handleFileChange = (event) => {
     const files = event.target.files;
@@ -33,112 +34,86 @@ function ImageUpload() {
     setShowModal(false);
   };
 
-//  const handleConfirmUpload = async () => {
-//    try {
-//      // Prepare form data
-//      const formData = new FormData();
-//      selectedFiles.forEach(file => {
-//        formData.append('images', file, file.name);
-//      });
-//
-//      // Make API call
-//      const response = await fetch('http://localhost:8000/api/process-image/', {
-//        method: 'POST',
-//        body: formData
-//      });
-//
-//      // Introduce a delay (e.g., 10 seconds) before handling the response
-//      await new Promise(resolve => setTimeout(resolve, 10000));
-//      const data = await response.json();
-//
-//      // Handle the response after the delay
-//      console.log(data); // Log the response data to console
-//
-//      // Check if response contains output_text
-//      if (data.hasOwnProperty('output_text')) {
-//        setOutput(data.output_text);
-//      }
-//
-//      setShowModal(false);
-//      setSelectedFiles([]);
-//      alert("Images uploaded successfully");
-//      fileInputRef.current.value = null;
-//    } catch (error) {
-//      console.error('Error:', error);
-//      alert("An error occurred while uploading images");
-//    }
-//  };
+  const handleConfirmUpload = async () => {
+    try {
+      setLoading(true); // Set loading to true while waiting for response
+      // Prepare form data
+      const formData = new FormData();
+      selectedFiles.forEach(file => {
+        formData.append('images', file, file.name);
+      });
 
-const handleConfirmUpload = async () => {
-  try {
-    setLoading(true); // Set loading to true while waiting for response
-    // Prepare form data
-    const formData = new FormData();
-    selectedFiles.forEach(file => {
-      formData.append('images', file, file.name);
-    });
-
-    // Make API call
-    const response = await fetch('http://localhost:8000/api/process-image/', {
-      method: 'POST',
-      body: formData
-    });
-
-    // Check if the response status is 200
-    if (response.status === 200) {
-      const responseData = await response.json();
-      // Check if response data contains a message
-      if (responseData.message) {
-        // Set output state with the message
-        setOutput(responseData.message);
-      } else {
-        // Continue with the previous handling logic
-        const dataArray = responseData;
-        if (dataArray.length > 0) {
-          const data = dataArray[0]; // Access the 0th element
-          if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
-            const outputText = data.output_text;
-            const flag = data.flag;
-            console.log("Output Text:", outputText);
-            console.log("Flag:", flag);
-            setOutput(outputText);
-            setFlag(flag);
-            // Update outputData state
-            updateOutputData(outputText, flag);
+      // Make API call
+      const response = await fetch('http://localhost:8000/api/process-image/', {
+        method: 'POST',
+        body: formData
+      });
+      console.log(response.Array);
+      // Check if the response status is 200
+      if (response.status === 200) {
+        const responseData = await response.json();
+        console.log(responseData);
+        // Check if response data contains a message
+        if (responseData.message) {
+          // Set output state with the message
+          console.log("hi");
+          setOutput(responseData.message);
+        } else {
+          // Continue with the previous handling logic
+          const dataArray = responseData;
+          console.log("Data-Array object length from backend: " + dataArray.length);
+          if (dataArray.length > 0) {
+            let concatenatedOutputText = ''; // Initialize concatenated output text
+            const updatedOutputData = []; // Initialize an empty array for updated output data
+            dataArray.forEach((data, index) => {
+              if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
+                const outputText = data.output_text;
+                const flag = data.flag;
+                console.log("Output Text:", outputText);
+                console.log("Flag:", flag);
+                concatenatedOutputText += outputText + ' '; // Concatenate output texts
+                // Update outputData state
+                updateOutputData(outputText, flag, selectedFiles[index], updatedOutputData);
+              }
+            });
+            setConcatenatedOutput(concatenatedOutputText); // Set concatenated output text
+            setOutputData(updatedOutputData); // Set the updated output data
           }
         }
+      } else {
+        // Handle non-200 status code
+        console.error('Error:', response.statusText);
+        alert("An error occurred while uploading images");
       }
-    } else {
-      // Handle non-200 status code
-      console.error('Error:', response.statusText);
+
+      setShowModal(false);
+      setSelectedFiles([]);
+      alert("Images uploaded successfully");
+      fileInputRef.current.value = null;
+    } catch (error) {
+      console.error('Error:', error);
       alert("An error occurred while uploading images");
+    } finally {
+      setLoading(false); // Set loading back to false when request is completed
     }
-
-    setShowModal(false);
-    setSelectedFiles([]);
-    alert("Images uploaded successfully");
-    fileInputRef.current.value = null;
-  } catch (error) {
-    console.error('Error:', error);
-    alert("An error occurred while uploading images");
-  }finally {
-         setLoading(false); // Set loading back to false when request is completed
-  }
-};
-
-
-  const updateOutputData = (outputText, flag) => {
-    const updatedOutputData = outputData.concat({
-      images: selectedFiles,
-      output: outputText,
-      flag: flag
-    });
-    setOutputData(updatedOutputData);
   };
 
-
-
-  return (
+  const updateOutputData = (outputText, flag, image, updatedOutputData) => {
+    const existingEntry = updatedOutputData.find(entry => entry.images.includes(image));
+    if (existingEntry) {
+      // If an entry already exists for this image, update its output and flag
+      existingEntry.output = outputText;
+      existingEntry.flag = flag;
+    } else {
+      // Otherwise, create a new entry for this image
+      updatedOutputData.push({
+        images: [image],
+        output: outputText,
+        flag: flag
+      });
+    }
+  };
+    return (
     <div className="container">
       <div>
         <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} multiple className="mb-2" />
@@ -174,58 +149,55 @@ const handleConfirmUpload = async () => {
       {loading && <LoadingSpinner />}
 
       <div className="mt-4" style={outputContainerStyle}>
-              <h2>Output</h2>
-              <div className="output-content" style={outputContentStyle}>
-                <p>{output}</p>
-                <p>{flag}</p>
-              </div>
-            </div>
-<div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-  <table className="table">
-    <thead>
-      <tr>
-        <th>Uploaded Images</th>
-        <th>Output</th>
-        <th>Flag</th>
-      </tr>
-    </thead>
-    <tbody>
-      {outputData.map((data, index) => (
-        <tr key={index}>
-          <td>
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-              {data.images.map((image, imageIndex) => (
-                <img
-                  key={imageIndex}
-                  src={URL.createObjectURL(image)}
-                  alt={`Uploaded Image ${index + 1}-${imageIndex + 1}`}
-                  className="img-fluid"
-                  style={{ width: '100px', height: 'auto', marginRight: '10px', marginBottom: '10px' }}
-                />
-              ))}
-            </div>
-          </td>
-          <td>{data.output}</td>
-          <td>{data.flag}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-          </div>
-        );
-      }
+        <h2>Output</h2>
+        <div className="output-content" style={outputContentStyle}>
+          <p>{concatenatedOutput}</p>
+        </div>
+      </div>
 
-      // Inline CSS styles
-      const outputContainerStyle = {
-        border: '1px solid #ccc',
-        borderRadius: '5px',
-        padding: '10px',
-        marginTop: '20px'
-      };
+      <div className="mt-4" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Uploaded Image</th>
+              <th>Output</th>
+              <th>Flag</th>
+            </tr>
+          </thead>
+          <tbody>
+            {outputData.flatMap((data, index) =>
+              data.images.map((image, imageIndex) => (
+                <tr key={`${index}-${imageIndex}`}>
+                  <td>
+                    <img
+                      src={URL.createObjectURL(image)}
+                      alt={`Uploaded Image ${index + 1}-${imageIndex + 1}`}
+                      className="img-fluid"
+                      style={{ width: '100px', height: 'auto', marginRight: '10px', marginBottom: '10px' }}
+                    />
+                  </td>
+                  <td>{data.output}</td>
+                  <td>{data.flag.toString()}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
-      const outputContentStyle = {
-        margin: '10px 0'
-      };
+// Inline CSS styles
+const outputContainerStyle = {
+  border: '1px solid #ccc',
+  borderRadius: '5px',
+  padding: '10px',
+  marginTop: '20px'
+};
+
+const outputContentStyle = {
+  margin: '10px 0'
+};
 
 export default ImageUpload;

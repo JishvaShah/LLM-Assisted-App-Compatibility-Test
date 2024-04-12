@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Header from "./Header.js";
 import Footer from "./Footer.js";
+import './Search.css';
 
 function Search() {
   const [startDate, setStartDate] = useState("");
@@ -38,57 +39,60 @@ function Search() {
       return [];
     }
     const data = await response.json();
+    console.log(data);
     return data;
   };
 
   return (
-    <div className="main">
+    <div className="search-container">
       <Header />
-      <h1>Search</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Start Date:</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
+      {/* <h1>Search</h1> */}
+      <form onSubmit={handleSubmit} className="search-form">
+        <div className="input-row">
+          <div>
+            <label>Start Date:</label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+          <div>
+            <label>End Date:</label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+          <div>
+            <label>Flag:</label>
+            <select
+              value={flag}
+              onChange={(e) => setFlag(e.target.value === "true")}
+            >
+              <option value="">All</option>
+              <option value="true">True</option>
+              <option value="false">False</option>
+            </select>
+          </div>
+          <div>
+            <label>Image Name:</label>
+            <input
+              type="text"
+              value={imageName}
+              onChange={(e) => setImageName(e.target.value)}
+            />
+          </div>
+          <button type="submit" className="search-button">Search</button>
         </div>
-        <div>
-          <label>End Date:</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Flag:</label>
-          <select
-            value={flag}
-            onChange={(e) => setFlag(e.target.value === "true")}
-          >
-            <option value="">All</option>
-            <option value="true">True</option>
-            <option value="false">False</option>
-          </select>
-        </div>
-        <div>
-          <label>Image Name:</label>
-          <input
-            type="text"
-            value={imageName}
-            onChange={(e) => setImageName(e.target.value)}
-          />
-        </div>
-        <button type="submit">Search</button>
       </form>
 
       <h2>Search Results</h2>
       <table>
         <thead>
           <tr>
-            <th>Image</th>
+            {/* <th>Image</th> */}
             <th>Image Name</th>
             <th>Flag</th>
             <th>Output Text</th>
@@ -98,23 +102,39 @@ function Search() {
         <tbody>
           {searchResults.map((result) => (
             <tr key={result.id}>
-              <td>
+              {/* <td>
                 <a href={result.signed_image_url} target="_blank" rel="noreferrer">
                   <img src={result.image_url} alt={`Screenshot ${result.id}`} />
                 </a>
-              </td>
+              </td> */}
               <td>{result.image_name}</td>
               <td>{result.analysis_result.flag ? "True" : "False"}</td>
               <td>{result.analysis_result.output_text}</td>
-              <td><a href={result.signed_image_url} target="_blank" rel="noreferrer">{result.signed_image_url}</a></td>
+              <td>
+                <a href={result.signed_image_url} target="_blank" rel="noreferrer" className="shortened-url">
+                  {shortenUrl(result.signed_image_url)}
+                </a>
+              </td>
               {/* Add more details as needed */}
             </tr>
           ))}
         </tbody>
       </table>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }
+
+// Function to shorten the URL
+const shortenUrl = (url) => {
+  const maxLength = 30; // Maximum length of the shortened URL
+  if (url.length <= maxLength) {
+    return url;
+  }
+  const halfLength = Math.floor(maxLength / 2);
+  const start = url.slice(0, halfLength);
+  const end = url.slice(-halfLength);
+  return `${start}...${end}`;
+};
 
 export default Search;
