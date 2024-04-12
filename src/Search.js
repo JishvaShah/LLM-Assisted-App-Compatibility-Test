@@ -85,20 +85,33 @@ function Search() {
       </form>
 
       <h2>Search Results</h2>
-      <ul>
-        {searchResults.map((result) => (
-          <li key={result.id}>
-            <a href={result.signed_image_url} target="_blank" rel="noreferrer">
-              <img src={result.image_url} alt={`Screenshot ${result.id}`} />
-            </a>
-            <p>Image Name: {result.image_name}</p>
-            <p>Flag: {result.analysis_result.flag ? "True" : "False"}</p>
-            <p>Output Text: {result.analysis_result.output_text}</p>
-            <p>Signed URL: <a href={result.signed_image_url} target="_blank" rel="noreferrer">{result.signed_image_url}</a></p>
-            {/* Add more details as needed */}
-          </li>
-        ))}
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Image Name</th>
+            <th>Flag</th>
+            <th>Output Text</th>
+            <th>Signed URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {searchResults.map((result) => (
+            <tr key={result.id}>
+              <td>
+                <a href={result.signed_image_url} target="_blank" rel="noreferrer">
+                  <img src={result.image_url} alt={`Screenshot ${result.id}`} />
+                </a>
+              </td>
+              <td>{result.image_name}</td>
+              <td>{result.analysis_result.flag ? "True" : "False"}</td>
+              <td>{result.analysis_result.output_text}</td>
+              <td><a href={result.signed_image_url} target="_blank" rel="noreferrer">{result.signed_image_url}</a></td>
+              {/* Add more details as needed */}
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <Footer />
     </div>
   );
