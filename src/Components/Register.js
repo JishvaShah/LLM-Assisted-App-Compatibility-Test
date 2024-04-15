@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header.js';
 import Footer from './Footer.js';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom'; 
-import './Register.css';
+import '../Styles/Register.css';
 
 function Register() {
   const [employeeID, setEmployeeID] = useState('');

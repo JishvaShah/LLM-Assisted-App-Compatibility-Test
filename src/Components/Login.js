@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './Header.js';
 import Footer from './Footer.js';
-import './Login.css';
+import '../Styles/Login.css';
 
 function Login() {
   const [employeeID, setEmployeeID] = useState('');
@@ -15,7 +15,6 @@ function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      console.log("emp:"+employeeID+" pwd:"+password);
       const response = await fetch('http://localhost:8000/login/', {
         method: 'POST',
         headers: {
@@ -28,11 +27,13 @@ function Login() {
       });
 
       if (response.ok) {
+        toast.success('Login Successful');
         const data = await response.json();
+        localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
-        navigate('/');
-        toast.success('Login Successful');
+        navigate('/upload');
+        
       } else {
         const errorData = await response.json();
         toast.error(errorData.error || 'Login Failed');
@@ -80,7 +81,6 @@ function Login() {
           <p className='contentText'>New user? <Link className="registerLink" to="/register">Register here</Link></p>
       </div>
       <Footer />
-      <ToastContainer />
     </div>
   );
 }

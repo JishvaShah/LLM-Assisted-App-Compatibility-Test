@@ -1,11 +1,12 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Home from './Home.js';
-import Search from './Search.js';
-import Uploads from './Uploads.js';
-import Login from './Login.js';
-import Register from './Register.js';
-import './App.css';
+import Home from './Components/Home.js';
+import Search from './Components/Search.js';
+import Uploads from './Components/Uploads.js';
+import Login from './Components/Login.js';
+import Register from './Components/Register.js';
+import Logout from './Components/Logout.js';
+import './Styles/App.css';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/upload" element={<Uploads />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/logout" element={<Logout />} />
       </Routes>
     </div>
   );
