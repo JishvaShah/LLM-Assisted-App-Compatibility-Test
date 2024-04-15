@@ -27,7 +27,7 @@ function Home() {
   }, [isLoggedIn]);
 
   const handleIsNotLoggedIn = () => {
-    toast.error('You need to be logged in to upload.');
+    toast.error('You need to be logged in to upload images.');
   };
 
   return (

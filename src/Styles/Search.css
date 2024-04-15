@@ -68,11 +68,16 @@ tbody tr {
   border-bottom: 1px solid #fff;
 }
 .search-button{
-    color: #625EB1;
+    color: #1D8FE1;
     background-color: #fff;
     border-radius: 3px;
     border: none;
     padding: 0% 1%;
+}
+.search-button:hover{
+  color: #fff;
+  background-color:transparent;
+  border: 2px solid white;
 }
 .shortened-url {
   display: inline-block;
