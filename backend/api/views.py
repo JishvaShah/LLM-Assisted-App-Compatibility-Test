@@ -17,6 +17,8 @@ from django.utils.dateparse import parse_date
 from PIL import Image
 import imagehash
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from collections import defaultdict
+import functools
 
 
 class ImageProcessingAPIView(APIView):
@@ -26,114 +28,131 @@ class ImageProcessingAPIView(APIView):
 
     parser_classes = (MultiPartParser, FormParser)
 
+    def _images_deduplicator(self, images: list):
+        unique_images = []
+        db_images = []
+        image_hashes = set()
+
+        for image_file in images:
+            try:
+                image = Image.open(image_file.open())
+                crop_percentage = 0.05  # crop 5% of the top off
+                crop_height = int(image.height * crop_percentage)
+                cropped_image = image.crop(
+                    (0, crop_height, image.width, image.height - crop_height)
+                )
+                image_hash = str(imagehash.average_hash(cropped_image))
+
+                queryset = Screenshot.objects.filter(image_hash=image_hash)
+                if not queryset.exists():  # if not in DB
+                    if (
+                        image_hash not in image_hashes
+                    ):  # check if same request has duplicates
+                        image_hashes.add(image_hash)
+                        unique_images.append((image_file, image_hash))
+                else:
+                    serialized = ScreenshotSerializer(queryset, many=True).data
+                    db_images.extend(serialized)
+
+            except Exception as e:
+                logging.error(
+                    f"Error processing image: {image_file.name}. Error: {str(e)}"
+                )
+        return unique_images, db_images
+
+    @functools.cache
+    def _init_logging(self):
+        logging.basicConfig(
+            level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+        )
+
+    def _process_unique_image(self, image_file, hash: int, results: defaultdict):
+        """
+        Processes images
+        Raises:
+            GeminiAPIError: when gemini request fails
+        """
+        logging.info(f"Processing image: {image_file.name}")
+        gemini_api = GeminiAPI()
+        prompt = prompt_factory.get_prompt()
+        image_file.seek(0)
+        output = gemini_api.process_image(image_file, prompt)
+
+        image_file.seek(0)
+
+        if not output:
+            raise GeminiAPIError("Gemini API returned None")
+
+        # use timestamp as filename
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"{timestamp}_{image_file.name}"
+
+        logging.info(f"Uploading image to Google Cloud Storage: {filename}")
+        # Upload the image to GCS
+        client = storage.Client.from_service_account_json(settings.GCP_CREDENTIALS_FILE)
+        bucket = client.get_bucket(settings.GCP_STORAGE_BUCKET)
+        blob = bucket.blob(filename)
+        blob.upload_from_file(image_file)
+        image_url = blob.public_url
+
+        logging.info(f"Saving image to database: {filename}")
+        # save screenshot information to database
+        screenshot = Screenshot(
+            image_url=image_url,
+            analysis_result=output,
+            prompt=prompt,
+            flag=output.get("flag"),
+            image_hash=hash,
+            image_name=image_file.name,
+        )
+        screenshot.save()
+
+        results["new_images"].append(
+            {
+                "output_text": output.get("output_text"),
+                "flag": output.get("flag"),
+                "image_name": image_file.name,
+            }
+        )
+
     def post(self, request, format=None):
         """
         Hashes images and deduplicates first before processing image content
         """
-        images = request.FILES.getlist("images")
-        results = []
-        unique_images = []
-        image_hashes = set()
+        self._init_logging()
 
-        logging.basicConfig(
-            level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-        )
         logging.info("Starting the script...")
         logging.info("Getting images from request...")
+        images = request.FILES.getlist("images")
+        results = defaultdict(list)
+        results["db_images"] = []
+        results["new_images"] = []
 
         if not images:
             return Response(
                 {"error": "No images found in the request."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        print("NUMBER OF IMAGES", len(images))
-        for image_file in images:
-            try:
 
-                image = Image.open(image_file.open())
-
-                crop_percentage = 0.05  # crop 5% of the top off
-                crop_height = int(image.height * crop_percentage)
-                cropped_image = image.crop(
-                    (0, crop_height, image.width, image.height - crop_height)
-                )
-
-                image_hash = str(imagehash.average_hash(cropped_image))
-
-                if not Screenshot.objects.filter(
-                    image_hash=image_hash
-                ).exists():  # if not in DB
-                    if (
-                        image_hash not in image_hashes
-                    ):  # check if same request has duplicates
-                        image_hashes.add(image_hash)
-                        unique_images.append((image_file, image_hash))
-
-            except Exception as e:
-                logging.error(
-                    f"Error processing image: {image_file.name}. Error: {str(e)}"
-                )
-
-        if not unique_images:
-            return Response(
-                {"message": "No images to process."},
-                status=status.HTTP_200_OK,
-            )
+        unique_images, db_images = self._images_deduplicator(images)
 
         for image_file, hash in unique_images:
-            logging.info(f"Processing image: {image_file.name}")
-
             try:
-                gemini_api = GeminiAPI()
-                prompt = prompt_factory.get_prompt()
-                image_file.seek(0)
-                output = gemini_api.process_image(image_file, prompt)
+                self._process_unique_image(image_file, hash, results)
             except GeminiAPIError as e:
                 return Response(
                     {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
 
-            image_file.seek(0)
-
-            if output:
-                # use timestamp as filename
-                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"{timestamp}_{image_file.name}"
-
-                logging.info(f"Uploading image to Google Cloud Storage: {filename}")
-                # Upload the image to GCS
-                client = storage.Client.from_service_account_json(
-                    settings.GCP_CREDENTIALS_FILE
-                )
-                bucket = client.get_bucket(settings.GCP_STORAGE_BUCKET)
-                blob = bucket.blob(filename)
-                blob.upload_from_file(image_file)
-                image_url = blob.public_url
-
-                logging.info(f"Saving image to database: {filename}")
-                # save screenshot information to database
-                screenshot = Screenshot(
-                    image_url=image_url,
-                    analysis_result=output,
-                    prompt=prompt,
-                    flag=output.get("flag"),
-                    image_hash=hash,
-                    image_name=image_file.name
-                )
-                screenshot.save()
-
-                results.append(
-                    {
-                        "output_text": output.get("output_text"),
-                        "flag": output.get("flag"),
-                        "image_name":image_file.name
-                    }
-                )
-            else:
-                return Response(
-                    {"error": "Gemini API returned None"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
+        # process images already in the DB
+        for image_file in db_images:
+            results["db_images"].append(
+                {
+                    "output_text": image_file.get("analysis_result")["output_text"],
+                    "flag": image_file.get("analysis_result")["flag"],
+                    "image_name": image_file.get("image_name"),
+                }
+            )
 
         logging.info("Script completed")
 
@@ -148,7 +167,7 @@ class ScreenshotListAPIView(generics.ListAPIView):
     queryset = Screenshot.objects.all()
     serializer_class = ScreenshotSerializer
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ["created_at", "image_url", "flag","image_name"]
+    filterset_fields = ["created_at", "image_url", "flag", "image_name", "image"]
     ordering_fields = ["created_at"]
     ordering = ["-created_at"]
 
