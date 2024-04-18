@@ -32,9 +32,11 @@ class ImageProcessingAPITests(APITestCase):
         response = self.client.post(self.url, data, format="multipart")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
-        for result in response.data:
-            self.assertIn("output_text", result)
-            self.assertIn("flag", result)
+        self.assertIsInstance(response.data, dict)
+        for key, result in response.data.items():
+            if key == ["new_images"]:
+                self.assertIn("output_text", result)
+                self.assertIn("flag", result)
 
     def test_image_processing_no_image(self):
         data = {}
@@ -75,12 +77,14 @@ class ScreenshotListAPIViewTestCase(APITestCase):
             flag=True,
             analysis_result={"flag": "true", "output_text": "There was an error."},
             image_hash="4567",
+            image_name="image1.png",
         )
         Screenshot.objects.create(
             image_url="http://example.com/image2.png",
             flag=False,
             analysis_result={"flag": "false", "output_text": "No issues detected."},
             image_hash="6789",
+            image_name="image2.png",
         )
 
     def test_get_all_screenshots(self):
@@ -112,7 +116,6 @@ class ScreenshotListAPIViewTestCase(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)
-
 
 # class ScreenshotTestCase(TestCase):
 
