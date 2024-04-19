@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import LoadingSpinner from './LoadingSpinner.js';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ImageUpload() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -36,76 +38,69 @@ function ImageUpload() {
 
   const handleConfirmUpload = async () => {
     try {
-      setLoading(true); // Set loading to true while waiting for response
-      // Prepare form data
+      setLoading(true);
       const formData = new FormData();
       selectedFiles.forEach(file => {
         formData.append('images', file, file.name);
       });
 
-      // Make API call
       const response = await fetch('http://localhost:8000/api/process-image/', {
         method: 'POST',
         body: formData
       });
-      console.log(response.Array);
-      // Check if the response status is 200
+
       if (response.status === 200) {
         const responseData = await response.json();
-        console.log(responseData);
-        // Check if response data contains a message
+        
         if (responseData.message) {
-          // Set output state with the message
-          console.log("hi");
           setOutput(responseData.message);
-        } else {
-          // Continue with the previous handling logic
-          const dataArray = responseData;
-          console.log("Data-Array object length from backend: " + dataArray.length);
-          if (dataArray.length > 0) {
-            let concatenatedOutputText = ''; // Initialize concatenated output text
-            const updatedOutputData = []; // Initialize an empty array for updated output data
-            dataArray.forEach((data, index) => {
-              if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
-                const outputText = data.output_text;
-                const flag = data.flag;
-                console.log("Output Text:", outputText);
-                console.log("Flag:", flag);
-                concatenatedOutputText += outputText + ' '; // Concatenate output texts
-                // Update outputData state
-                updateOutputData(outputText, flag, selectedFiles[index], updatedOutputData);
-              }
-            });
-            setConcatenatedOutput(concatenatedOutputText); // Set concatenated output text
-            setOutputData(updatedOutputData); // Set the updated output data
-          }
+        }else {
+          const { db_images, new_images } = responseData;
+          const updatedOutputData = [];
+
+          const imageNames = selectedFiles.map(file => file.name);
+         
+          db_images.forEach(data => {
+            const { output_text, flag, image_name } = data;
+            const fileIndex = imageNames.indexOf(image_name);
+            if (fileIndex !== -1) {
+              updateOutputData(output_text, flag, selectedFiles[fileIndex], updatedOutputData);
+            }
+          });
+          new_images.forEach(data => {
+            const { output_text, flag, image_name } = data;
+            const fileIndex = imageNames.indexOf(image_name);
+            if (fileIndex !== -1) {
+              updateOutputData(output_text, flag, selectedFiles[fileIndex], updatedOutputData);
+            }
+          });
+          setOutputData(updatedOutputData);
         }
+      
       } else {
-        // Handle non-200 status code
         console.error('Error:', response.statusText);
-        alert("An error occurred while uploading images");
+        toast.error('An error occurred while uploading images');
       }
 
       setShowModal(false);
       setSelectedFiles([]);
-      alert("Images uploaded successfully");
+      toast.success('Images uploaded successfully');
       fileInputRef.current.value = null;
+      
     } catch (error) {
       console.error('Error:', error);
-      alert("An error occurred while uploading images");
+      toast.error('An error occurred while uploading images');
     } finally {
-      setLoading(false); // Set loading back to false when request is completed
+      setLoading(false); 
     }
   };
 
   const updateOutputData = (outputText, flag, image, updatedOutputData) => {
     const existingEntry = updatedOutputData.find(entry => entry.images.includes(image));
     if (existingEntry) {
-      // If an entry already exists for this image, update its output and flag
       existingEntry.output = outputText;
       existingEntry.flag = flag;
     } else {
-      // Otherwise, create a new entry for this image
       updatedOutputData.push({
         images: [image],
         output: outputText,
@@ -120,7 +115,7 @@ function ImageUpload() {
         {selectedFiles.length > 0 && (
           <>
             <button className="btn btn-danger ml-2" onClick={() => setSelectedFiles([])}>Clear Selection</button>
-            <button className="btn btn-primary ml-2" onClick={handleSubmit}>Submit</button>
+            <button style={{ backgroundColor: 'white', borderRadius:'5px', border:"2px solid white"}} className="custom-submit-button" onClick={handleSubmit}>Submit</button>
           </>
         )}
       </div>
@@ -188,7 +183,6 @@ function ImageUpload() {
   );
 }
 
-// Inline CSS styles
 const outputContainerStyle = {
   border: '1px solid #ccc',
   borderRadius: '5px',
