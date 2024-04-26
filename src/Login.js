@@ -16,7 +16,7 @@ function Login() {
     event.preventDefault();
     try {
       console.log("emp:"+employeeID+" pwd:"+password);
-      const response = await fetch('http://localhost:8000/login/', {
+      const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -29,6 +29,7 @@ function Login() {
 
       if (response.ok) {
         const data = await response.json();
+        localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
         navigate('/');
