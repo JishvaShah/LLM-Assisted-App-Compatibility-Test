@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './Search.css';
+import '../Styles/Search.css';
 
 function SearchContainer() {
   const [startDate, setStartDate] = useState("");

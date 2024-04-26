@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Header from './Header.js';
 import Footer from './Footer.js';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { Link } from 'react-router-dom'; 
-import './Register.css';
+import '../Styles/Login.css';
 
-function Register() {
+function Login() {
   const [employeeID, setEmployeeID] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ function Register() {
     event.preventDefault();
     try {
       console.log("emp:"+employeeID+" pwd:"+password);
-      const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/signup/', {
+      const response = await fetch('http://localhost:8000/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -26,16 +26,16 @@ function Register() {
           password: password
         })
       });
-      
+
       if (response.ok) {
-        //check
-        console.log('Registration Successful');
-        toast.success('Registration Successful');
-        navigate('/login');
+        const data = await response.json();
+        localStorage.setItem('accessToken', data.access);
+        localStorage.setItem('refreshToken', data.refresh);
+        navigate('/');
+        toast.success('Login Successful');
       } else {
-        //check
-        console.error('Registration Failed');
-        toast.error('Registration Failed');
+        const errorData = await response.json();
+        toast.error(errorData.error || 'Login Failed');
       }
 
       setEmployeeID('');
@@ -51,8 +51,8 @@ function Register() {
     <div className='main'>
       <Header />
       <div className='content'>
-          <p className='contentText'>Register</p>
-          <div className='regForm'>
+          <p className='contentText'>Login</p>
+          <div className='loginForm'>
             <form onSubmit={handleSubmit}>
               <label htmlFor="employeeID">Employee ID:</label>
               <input
@@ -74,14 +74,15 @@ function Register() {
                 onChange={(event) => setPassword(event.target.value)}
                 required
               />
-              <input type="submit" value="Register" />
+              <input type="submit" value="Login" />
             </form>
           </div>
-          <p className='contentText'>Existing user? <Link className="loginLink" to="/login">Login here</Link></p>
+          <p className='contentText'>New user? <Link className="registerLink" to="/register">Register here</Link></p>
       </div>
       <Footer />
+      <ToastContainer />
     </div>
   );
 }
 
-export default Register;
+export default Login;

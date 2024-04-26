@@ -33,24 +33,32 @@
   
   .loginForm form input {
     margin-bottom: 10%; 
-    border: none;
+    background: transparent;
+    border: 2px solid white;
     border-radius: 3px;
-    color: #6f6f6f;
+    color: #fff;
     font-size: large;
     padding: 5px 15px;
   }
   .loginForm form input:focus {
     outline: none; 
-    border-color: #32B2BB; 
-    box-shadow: 0 0 5px #32B2BB; 
+    border-color: #fff; 
+    box-shadow: 0 0 5px #fff; 
   }
   
   .loginForm form input[type="submit"] {
     margin-top: 5%; 
     align-self: center;
-    color: #625EB1;
+    color: #1D8FE1;
     background-color: #fff;
     font-size: 18px;
+    font-weight: 600;
     padding: 2% 6%;
   }
+  .loginForm form input[type="submit"]:hover {
+    color: #fff;
+    background-color:transparent;
+  }
+
+ 
   

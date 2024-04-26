@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import LoadingSpinner from './LoadingSpinner.js';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function ImageUpload() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -44,7 +46,7 @@ function ImageUpload() {
       });
 
       // Make API call
-      const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/process-image/', {
+      const response = await fetch('http://localhost:8000/api/process-image/', {
         method: 'POST',
         body: formData
       });

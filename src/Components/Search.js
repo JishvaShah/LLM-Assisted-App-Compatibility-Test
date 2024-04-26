@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Header from "./Header.js";
 import Footer from "./Footer.js";
 import SearchContainer from "./SearchContainer.js";
-// import './Search.css';
 
 function Search() {
 
