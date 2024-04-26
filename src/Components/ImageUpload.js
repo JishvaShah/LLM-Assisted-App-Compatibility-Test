@@ -46,7 +46,7 @@ function ImageUpload() {
       });
 
       // Make API call
-      const response = await fetch('http://localhost:8000/api/process-image/', {
+      const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/process-image/', {
         method: 'POST',
         body: formData
       });
