@@ -46,7 +46,7 @@ const handleConfirmUpload = async () => {
             formData.append('images', file, file.name);
             });
             // Make API call
-            const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/process-image/',
+            const response = await fetch('https://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/process-image/',
             {       method: 'POST',       body: formData     });
             // Check if the response status is 200
             if (response.status === 200) {

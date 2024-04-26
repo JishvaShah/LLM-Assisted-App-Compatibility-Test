@@ -25,7 +25,7 @@ function SearchContainer() {
     flag = null,
     imageName = "",
   }) => {
-    let url = "http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/screenshots/?";
+    let url = "https://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/screenshots/?";
     if (startDate) url += `start_date=${startDate}&`;
     if (endDate) url += `end_date=${endDate}&`;
     if (flag !== null) url += `flag=${flag}&`;
