@@ -18,7 +18,7 @@ function Register() {
     event.preventDefault();
     try {
       console.log("emp:"+employeeID+" pwd:"+password);
-      const response = await fetch('https://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/signup/', {
+      const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/signup/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

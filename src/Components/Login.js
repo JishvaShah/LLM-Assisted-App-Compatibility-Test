@@ -18,7 +18,7 @@ function Login() {
     event.preventDefault();
     try {
       console.log("emp:"+employeeID+" pwd:"+password);
-      const response = await fetch('https://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/login/', {
+      const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
