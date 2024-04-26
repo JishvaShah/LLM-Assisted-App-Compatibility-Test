@@ -17,25 +17,13 @@ function Header() {
       <p className='logoName'>AppCheck AI</p>
       <div className="navbar">
         <ul>
-            <li><Link to="/">Home</Link></li>
-            {isLoggedIn() 
-              ? (<li><Link to="/search">Search</Link></li>)
-              : (
-                <>
-                  <li><Link to="/login" onClick={handleIsNotLoggedIn}>Search</Link></li>
-                </>
-            )}
-            {isLoggedIn() 
-              ? (<li><Link to="/upload">Upload</Link></li>)
-              : (
-                <>
-                  <li><Link to="/login" onClick={handleIsNotLoggedIn}>Upload</Link></li>
-                </>
-            )}
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/register">Register</Link></li>
-            <li><Link to="/logout">Logout</Link></li>
-        </ul>    
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/search">Search</Link></li>
+          <li><Link to="/upload">Upload</Link></li>
+          <li><Link to="/login">Login</Link></li>
+          <li><Link to="/register">Register</Link></li>
+          <li><Link to="/logout">Logout</Link></li>
+        </ul>
       </div>
     </div>
   );
