@@ -7,6 +7,8 @@ import Login from './Components/Login.js';
 import Register from './Components/Register.js';
 import Logout from './Components/Logout.js';
 import './Styles/App.css';
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
+
 
 function App() {
   return (

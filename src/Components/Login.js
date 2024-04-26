@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from './Header.js';
 import Footer from './Footer.js';
 import '../Styles/Login.css';
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
+
 
 function Login() {
   const [employeeID, setEmployeeID] = useState('');
@@ -31,7 +33,7 @@ function Login() {
         const data = await response.json();
         localStorage.setItem('accessToken', data.access);
         localStorage.setItem('refreshToken', data.refresh);
-        navigate('/');
+        navigate('/upload');
         toast.success('Login Successful');
       } else {
         const errorData = await response.json();

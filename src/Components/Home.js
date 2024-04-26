@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import Header from './Header.js';
 import Footer from './Footer.js';
 import '../Styles/Home.css';
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
+
 
 function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

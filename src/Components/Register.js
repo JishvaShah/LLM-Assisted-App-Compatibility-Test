@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom'; 
 import '../Styles/Register.css';
+import { ToastContainer } from 'react-toastify'; // Import ToastContainer
+
 
 function Register() {
   const [employeeID, setEmployeeID] = useState('');

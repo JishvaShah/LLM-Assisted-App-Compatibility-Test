@@ -36,84 +36,80 @@ function ImageUpload() {
     setShowModal(false);
   };
 
-  const handleConfirmUpload = async () => {
+const handleConfirmUpload = async () => {
     try {
-      setLoading(true); // Set loading to true while waiting for response
-      // Prepare form data
-      const formData = new FormData();
-      selectedFiles.forEach(file => {
-        formData.append('images', file, file.name);
-      });
-
-      // Make API call
-      const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/process-image/', {
-        method: 'POST',
-        body: formData
-      });
-      console.log(response.Array);
-      // Check if the response status is 200
-      if (response.status === 200) {
-        const responseData = await response.json();
-        console.log(responseData);
-        // Check if response data contains a message
-        if (responseData.message) {
-          // Set output state with the message
-          console.log("hi");
-          setOutput(responseData.message);
-        } else {
-          // Continue with the previous handling logic
-          const dataArray = responseData;
-          console.log("Data-Array object length from backend: " + dataArray.length);
-          if (dataArray.length > 0) {
-            let concatenatedOutputText = ''; // Initialize concatenated output text
-            const updatedOutputData = []; // Initialize an empty array for updated output data
-            dataArray.forEach((data, index) => {
-              if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
-                const outputText = data.output_text;
-                const flag = data.flag;
-                console.log("Output Text:", outputText);
-                console.log("Flag:", flag);
-                concatenatedOutputText += outputText + ' '; // Concatenate output texts
-                // Update outputData state
-                updateOutputData(outputText, flag, selectedFiles[index], updatedOutputData);
-              }
+        setLoading(true);
+        // Set loading to true while waiting for response
+        // Prepare form data
+        const formData = new FormData();
+        selectedFiles.forEach(file => {
+            formData.append('images', file, file.name);
             });
-            setConcatenatedOutput(concatenatedOutputText); // Set concatenated output text
-            setOutputData(updatedOutputData); // Set the updated output data
-          }
-        }
-      } else {
-        // Handle non-200 status code
-        console.error('Error:', response.statusText);
-        alert("An error occurred while uploading images");
-      }
+            // Make API call
+            const response = await fetch('http://llm-app-balancer-327500741.us-east-2.elb.amazonaws.com/api/process-image/',
+            {       method: 'POST',       body: formData     });
+            // Check if the response status is 200
+            if (response.status === 200) {
+                const responseData = await response.json();
+                // Combine db_images and new_images into one array
+                const combinedData = [...responseData.db_images, ...responseData.new_images];
+                // Check if combinedData is not empty
+                if (combinedData.length > 0) {
+                let concatenatedOutputText = '';
+                // Initialize concatenated output text
+                const updatedOutputData = [];
+                // Initialize an empty array for updated output data
+                combinedData.forEach((data, index) => {
+                if (data.hasOwnProperty('output_text') && data.hasOwnProperty('flag')) {
+                    const outputText = data.output_text;
+                    const flag = data.flag;
+                    concatenatedOutputText += outputText + ' ';
+                    // Concatenate output texts
+                    // Update outputData state
+                    updateOutputData(outputText, flag, selectedFiles[index], updatedOutputData);
+                    }
+                    });
+                    setConcatenatedOutput(concatenatedOutputText); // Set concatenated output text
+                    setOutputData(updatedOutputData); // Set the updated output data
+                    }
+                    setShowModal(false);
+                    setSelectedFiles([]);
+                    if (combinedData.length > 0) {
+                        toast.success("Images uploaded and processed successfully!");
+                    } else {
+                        toast.info("Images uploaded but no data to display.");
+                    }
+                fileInputRef.current.value = null;
+                } else {
+                    // Handle non-200 status code
+                    console.error('Error:', response.statusText);
+                    toast.error("An error occurred while uploading images");
+                }
+                }
+                catch (error) {
+                console.error('Error:', error);
+                toast.error("An error occurred while processing images");
+                } finally {
+                setLoading(false); // Set loading back to false when request is completed
+                }
+                };
 
-      setShowModal(false);
-      setSelectedFiles([]);
-      alert("Images uploaded successfully");
-      fileInputRef.current.value = null;
-    } catch (error) {
-      console.error('Error:', error);
-      alert("An error occurred while uploading images");
-    } finally {
-      setLoading(false); // Set loading back to false when request is completed
-    }
-  };
 
   const updateOutputData = (outputText, flag, image, updatedOutputData) => {
     const existingEntry = updatedOutputData.find(entry => entry.images.includes(image));
-    if (existingEntry) {
-      // If an entry already exists for this image, update its output and flag
-      existingEntry.output = outputText;
-      existingEntry.flag = flag;
-    } else {
-      // Otherwise, create a new entry for this image
-      updatedOutputData.push({
-        images: [image],
-        output: outputText,
-        flag: flag
-      });
-    }
+//    if (existingEntry) {
+//      // If an entry already exists for this image, update its output and flag
+//      existingEntry.output = outputText;
+//      existingEntry.flag = flag;
+//    } else {
+//      // Otherwise, create a new entry for this image
+//
+//    }
+    updatedOutputData.push({
+            images: [image],
+            output: outputText,
+            flag: flag
+          });
   };
     return (
     <div className="container">
